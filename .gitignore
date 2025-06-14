@@ -16,3 +16,4 @@ environment.dev.ts
 /build
 
 .env
+.vercel

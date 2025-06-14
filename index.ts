@@ -20,3 +20,6 @@ app.set('trust proxy', 1)
 cacheRoutes(app)
 app.listen(3000, () => {
 })
+
+
+module.exports = app;

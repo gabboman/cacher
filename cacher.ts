@@ -2,7 +2,7 @@ import { Application, Request, Response } from 'express'
 import axios, { AxiosResponse } from 'axios'
 import { Resolver } from 'did-resolver'
 import { getResolver } from 'plc-did-resolver'
-import { getLinkPreview } from 'link-preview-js'
+//import { getLinkPreview } from 'link-preview-js'
 import optimizeMedia from './utils/optimizeMedia'
 import fs from 'fs'
 import * as crypto from "crypto";
@@ -78,22 +78,6 @@ export default function cacheRoutes(app: Application) {
             return sendWithCache(res, fileName)
           }
         } catch (error) {
-          if (fileName && environment.externalCacheBackups?.length > 0) {
-            const backupServer =
-              environment.externalCacheBackups[Math.floor(Math.random() * environment.externalCacheBackups.length)]
-
-            try {
-              const remoteResponse = await axios.get(backupServer + encodeURIComponent(mediaUrl), {
-                responseType: 'stream',
-                headers: { 'User-Agent': 'wafrnCacher' }
-              })
-
-              await writeStream(remoteResponse, fileName)
-              return sendWithCache(res, fileName)
-            } catch (e2) {
-              error = e2
-            }
-          }
           return res.sendStatus(500)
         }
       }
@@ -141,24 +125,5 @@ export default function cacheRoutes(app: Application) {
     }
   })
 
-  app.get('/api/linkPreview', async (req: Request, res: Response) => {
-    const url = String(req.query?.url)
-    const shasum = crypto.createHash('sha1')
-    shasum.update(url.toLowerCase())
-    const urlHash = shasum.digest('hex')
-    const cacheResult = undefined
-    if (cacheResult) {
-      res.send(cacheResult)
-    } else {
-      let result = {}
-      try {
-        result = await getLinkPreview(url, {
-          followRedirects: 'follow',
-          headers: { 'User-Agent': 'wafrnCacher' }
-        })
-      } catch (error) {}
-      // we cache the url 24 hours if success, 5 minutes if not
-      res.send(result)
-    }
-  })
+  
 }
