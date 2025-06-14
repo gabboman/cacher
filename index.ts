@@ -3,9 +3,6 @@ import cors from 'cors'
 import fs from 'fs'
 import cacheRoutes from './cacher'
 
-fs.rmSync('cache', { recursive: true, force: true })
-fs.mkdirSync('cache')
-
 
 const app = express()
 function errorHandler(err: Error, req: Request, res: Response, next: Function) {
